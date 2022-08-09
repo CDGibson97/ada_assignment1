@@ -8,6 +8,7 @@ public abstract class Task<E,F> implements Runnable{
 
     public E element;
     private int ID;
+    public Thread thread;
 
     public Task(E element){
         this.element = element;
@@ -16,7 +17,6 @@ public abstract class Task<E,F> implements Runnable{
     }
 
     public int getID(){
-
         return this.ID;
     }
 
@@ -31,7 +31,6 @@ public abstract class Task<E,F> implements Runnable{
     protected void notifyAll(F progress){
 
     }
-
 
     @Override
     public void run() {
