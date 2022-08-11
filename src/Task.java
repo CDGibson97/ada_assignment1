@@ -1,4 +1,6 @@
 import javax.lang.model.element.Element;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Callum Gibson and Jacob Owen
@@ -9,11 +11,13 @@ public abstract class Task<E,F> implements Runnable{
     public E element;
     private int ID;
     public Thread thread;
+    public List<TaskObserver> listeners;
 
     public Task(E element){
         this.element = element;
         UniqueIdentifier UI = new UniqueIdentifier();
         this.ID = UI.returnID();
+        this.listeners = new ArrayList<>();
     }
 
     public int getID(){
@@ -22,13 +26,19 @@ public abstract class Task<E,F> implements Runnable{
 
     public void addListener(TaskObserver<F> o){
 
+        listeners.add(o);
     }
 
     public void removeListener(TaskObserver<F> o){
 
+        listeners.remove(o);
     }
 
     protected void notifyAll(F progress){
+        for(TaskObserver<F> i: listeners)
+        {
+            i.process(progress);
+        }
 
     }
 
