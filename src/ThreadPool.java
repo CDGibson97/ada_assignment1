@@ -40,6 +40,7 @@ public class ThreadPool implements Runnable {
         synchronized (taskQueue) {
             taskQueue.add(task);
             taskQueue.notifyAll();
+            task.run();
             return true;
         }
     }
