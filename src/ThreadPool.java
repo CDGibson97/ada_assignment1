@@ -6,62 +6,57 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Student ID: 15906010 and 20125914
  */
 public class ThreadPool implements Runnable {
-    private Queue tasks;
-    private Queue<Thread> pool;
+    private final LinkedBlockingQueue taskQueue;//queue
+    private Queue<Thread> theadPool;//threads
     private boolean run;
-    public ThreadPool(int initialSize)
-    {
-        this.pool = new LinkedBlockingQueue<>(initialSize);
-        for(int i = 0; i < initialSize; i++){
+
+    public ThreadPool(int initialSize) {
+        this.taskQueue = new LinkedBlockingQueue();
+        this.theadPool = new LinkedBlockingQueue<>(initialSize);
+        for (int i = 0; i < initialSize; i++) {
             Thread thread = new Thread();
-            this.pool.add(thread);
+            this.theadPool.add(thread);
             thread.start();
         }
     }
 
-    public int getSize()
-    {
-        return this.pool.size();
+    public int getSize() {
+        return this.theadPool.size();
     }
 
-    public int getAvailable()
-    {
+    public int getAvailable() {
         return 0;
     }
 
-    public void resize(int newSize)
-    {
+    public void resize(int newSize) {
 
     }
 
-    public void destroyPool()
-    {
+    public void destroyPool() {
 
     }
 
-    public boolean perform(Runnable task)
-    {
-        task.run();
-        return true;
-    }
-
-    public synchronized void stop(){
-        run = false;
+    public boolean perform(Runnable task) {
+        synchronized (taskQueue) {
+            taskQueue.add(task);
+            taskQueue.notifyAll();
+            return true;
+        }
     }
 
     @Override
-    public void run(){
-        while(run){
-            try {
-                if(tasks.isEmpty()) {
-                    Thread.currentThread().wait();
-                } else{
-                    Runnable run = (Runnable) tasks.poll();
-                    run.run();
+    public void run() {
+        Runnable task = null;
+        while (true) {
+            while (taskQueue.isEmpty()) {
+                try {
+                    taskQueue.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
-            }catch(Exception ex){
-                System.err.println("Error: "+ex);
             }
+            task = (Runnable) taskQueue.poll();
+            task.run();
         }
     }
 }

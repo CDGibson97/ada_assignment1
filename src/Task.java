@@ -9,14 +9,14 @@ import java.util.List;
 public abstract class Task<E,F> implements Runnable{
 
     public E element;
-    private int ID;
+    public int ID;
     public Thread thread;
     public List<TaskObserver> listeners;
 
     public Task(E element){
         this.element = element;
         UniqueIdentifier UI = new UniqueIdentifier();
-        this.ID = UI.returnID();
+        UI.returnID(this);
         this.listeners = new ArrayList<>();
     }
 
