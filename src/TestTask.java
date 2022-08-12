@@ -1,8 +1,8 @@
-public class TestTask extends Task implements TaskObserver {
+public class TestTask<Integer, Boolean> extends Task implements TaskObserver {
 
     public ThreadPool pool;
 
-    public TestTask(Object element) {
+    public TestTask(Integer element) {
         super(element);
     }
 

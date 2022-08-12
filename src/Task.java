@@ -35,11 +35,10 @@ public abstract class Task<E,F> implements Runnable{
     }
 
     protected void notifyAll(F progress){
-        for(TaskObserver<F> i: listeners)
-        {
+        for(TaskObserver<F> i: listeners) {
             i.process(progress);
         }
-
+        System.out.println("wooooo");
     }
 
     @Override
