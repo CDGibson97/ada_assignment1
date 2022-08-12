@@ -48,16 +48,17 @@ public class ThreadPool implements Runnable {
     public void run() {
         Runnable task = null;
         while (true) {
-            synchronized (taskQueue){
+            synchronized (taskQueue) {
                 while (taskQueue.isEmpty()) {
-                try {
-                    taskQueue.wait();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }}
+                    try {
+                        taskQueue.wait();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                task = (Runnable) taskQueue.poll();
+                task.run();
             }
-            task = (Runnable) taskQueue.poll();
-            task.run();
         }
     }
 }

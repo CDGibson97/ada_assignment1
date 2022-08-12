@@ -14,7 +14,6 @@ public class TestTask extends Task implements TaskObserver {
 
     @Override
     public void process(Object update) {
-        System.out.println(getID());
-        System.out.println(update);
+        System.out.println("Thread: "+ getID()+" answer "+update);
     }
 }
