@@ -1,5 +1,7 @@
 public class TestTask extends Task implements TaskObserver {
 
+    public ThreadPool pool;
+
     public TestTask(Object element) {
         super(element);
     }
@@ -14,6 +16,6 @@ public class TestTask extends Task implements TaskObserver {
 
     @Override
     public void process(Object update) {
-        System.out.println("Thread: "+ getID()+" answer "+update);
+        System.out.println(" is doing task: "+getID()+" answer: "+update);
     }
 }

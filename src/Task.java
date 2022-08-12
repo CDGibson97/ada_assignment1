@@ -10,7 +10,7 @@ public abstract class Task<E,F> implements Runnable{
 
     public E element;
     public int ID;
-    public Thread thread;
+    public Thread threads;
     public List<TaskObserver> listeners;
 
     public Task(E element){

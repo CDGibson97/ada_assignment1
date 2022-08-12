@@ -40,6 +40,7 @@ public class ThreadPool implements Runnable {
         synchronized (taskQueue) {
             taskQueue.add(task);
             taskQueue.notifyAll();
+            System.out.println("waking up");
             return true;
         }
     }
@@ -51,6 +52,7 @@ public class ThreadPool implements Runnable {
             synchronized (taskQueue) {
                 while (taskQueue.isEmpty()) {
                     try {
+                        System.out.println("sleeping");
                         taskQueue.wait();
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
