@@ -41,6 +41,7 @@ public class ThreadPool implements Runnable {
             taskQueue.add(task);
             taskQueue.notifyAll();
             System.out.println("waking up");
+            //System.out.println("There are "+this.getAvailable()+" threads available");
             return true;
         }
     }
@@ -54,6 +55,7 @@ public class ThreadPool implements Runnable {
                     try {
                         System.out.println("sleeping");
                         taskQueue.wait();
+                        //System.out.println("There are "+this.getAvailable()+" threads available");
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
