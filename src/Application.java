@@ -20,12 +20,12 @@ public class Application {
         }
         for (int i = 0; i < 5; i++) {
             TestTask task = new TestTask(i);
-            System.out.println(pool.perform(task));
+            pool.perform(task);
 
         }
         for (int i = 0; i < 5; i++) {
             TestTask task = new TestTask(i);
-            System.out.println(pool.perform(task));
+            pool.perform(task);
 
         }
         //pool.destroyPool();

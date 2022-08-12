@@ -1,9 +1,11 @@
 public class TestTask<Integer, Boolean> extends Task implements TaskObserver {
 
     public ThreadPool pool;
+    public boolean completed;
 
     public TestTask(Integer element) {
         super(element);
+        completed = false;
     }
 
     @Override
@@ -11,7 +13,7 @@ public class TestTask<Integer, Boolean> extends Task implements TaskObserver {
         int i = 4;
         int j = 8;
         this.process(i*j);
-
+        completed = true;
     }
 
     @Override

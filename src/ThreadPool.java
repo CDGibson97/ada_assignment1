@@ -7,34 +7,73 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class ThreadPool implements Runnable {
     private final LinkedBlockingQueue taskQueue;//queue
-    private Queue<Thread> theadPool;//threads
-    private boolean run;
+    private Queue<Thread> pool;//threads
+    private static int threadID = 1;
 
     public ThreadPool(int initialSize) {
         this.taskQueue = new LinkedBlockingQueue();
-        this.theadPool = new LinkedBlockingQueue<>(initialSize);
+        this.pool = new LinkedBlockingQueue<>(initialSize);
         for (int i = 0; i < initialSize; i++) {
             Thread thread = new Thread(this);
-            this.theadPool.add(thread);
+            thread.setName("Thread " + threadID++);
+            this.pool.add(thread);
             thread.start();
         }
     }
 
     public int getSize() {
-        return this.theadPool.size();
+        return this.pool.size();
     }
 
     public int getAvailable() {
-        return 0;
+        int count = 0;
+        if (!pool.isEmpty()) {
+            for (Thread thread : pool) {
+                if (thread.getState() == Thread.State.WAITING) {
+                    count++;
+                }
+            }
+            return count;
+        } else {
+            return pool.size();
+        }
     }
 
     public void resize(int newSize) {
+        LinkedBlockingQueue temp = new LinkedBlockingQueue(newSize);
 
+        for (Thread thread : pool) {
+            if (temp.remainingCapacity() != 0) {
+                temp.add(pool.remove());
+            }
+            else {
+                thread.stop();
+            }
+        }
+        if (temp.remainingCapacity() != 0 && pool.isEmpty()) {
+            while (temp.remainingCapacity() != 0) {
+                Thread thread = new Thread(this);
+                thread.setName("Thread " + threadID++);
+                temp.add(thread);
+                thread.start();
+            }
+        }
+        pool = temp;
     }
 
     public void destroyPool() {
-
+        while (pool.size() != 0) {
+            for (Thread thread : pool) {
+                if (thread.getState() == Thread.State.WAITING) {
+                    thread.stop();
+                    System.out.println(thread.getName() + " is terminating");
+                    pool.remove(thread);
+                }
+            }
+        }
+        System.out.println("Threads terminated");
     }
+
 
     public boolean perform(Runnable task) {
         synchronized (taskQueue) {
