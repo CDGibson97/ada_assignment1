@@ -14,7 +14,7 @@ public class ThreadPool implements Runnable {
         this.taskQueue = new LinkedBlockingQueue();
         this.theadPool = new LinkedBlockingQueue<>(initialSize);
         for (int i = 0; i < initialSize; i++) {
-            Thread thread = new Thread();
+            Thread thread = new Thread(this);
             this.theadPool.add(thread);
             thread.start();
         }
@@ -40,7 +40,6 @@ public class ThreadPool implements Runnable {
         synchronized (taskQueue) {
             taskQueue.add(task);
             taskQueue.notifyAll();
-            task.run();
             return true;
         }
     }
@@ -49,12 +48,13 @@ public class ThreadPool implements Runnable {
     public void run() {
         Runnable task = null;
         while (true) {
-            while (taskQueue.isEmpty()) {
+            synchronized (taskQueue){
+                while (taskQueue.isEmpty()) {
                 try {
                     taskQueue.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
-                }
+                }}
             }
             task = (Runnable) taskQueue.poll();
             task.run();

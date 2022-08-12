@@ -43,7 +43,5 @@ public abstract class Task<E,F> implements Runnable{
     }
 
     @Override
-    public void run() {
-
-    }
+    public abstract void run();
 }
